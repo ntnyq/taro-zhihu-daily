@@ -1,17 +1,14 @@
 import Taro, { Component } from '@tarojs/taro'
-import { View, Button } from '@tarojs/components'
-import { connect } from '@tarojs/redux'
 import {
-  AtButton,
-  AtAvatar,
-} from 'taro-ui'
+  View,
+  Image,
+  Text,
+  Swiper,
+  SwiperItem
+} from '@tarojs/components'
 import {
   getLatestNewsList,
 } from '@services'
-import {
-  add,
-  minus,
-} from '@actions/counter'
 
 import './style.scss'
 
@@ -22,10 +19,31 @@ class Index extends Component {
 
   constructor(props) {
     super(props)
+
+    this.state = {
+      date: '',
+      slides: [],
+      news: []
+    }
   }
 
   componentDidMount () {
     getLatestNewsList()
+      .then(res => {
+        const {
+          date,
+          stories,
+          top_stories
+        } = res
+
+        this.setState({
+          slides: top_stories,
+          date,
+          news: stories
+        })
+
+        console.log(this.state.news)
+      })
   }
 
   componentWillUnmount () { }
@@ -34,41 +52,43 @@ class Index extends Component {
 
   componentDidHide () { }
 
+  goPageDetail (id) {
+    Taro.navigateTo({
+      url: `/pages/detail/index?id=${id}`
+    })
+  }
+
   render () {
     return (
       <View className='index'>
-        <View>
-          <View>
-            当前数字 {this.props.count}
-          </View>
-          <AtAvatar text={`${this.props.count}`}>
-
-          </AtAvatar>
-          <Button onClick={this.props.add.bind(this)}>
-            +
-          </Button>
-          <Button onClick={this.props.minus.bind(this)}>
-            -
-          </Button>
-          <AtButton onClick={this.props.add.bind(this)} type='primary'>
-            +
-          </AtButton>
-          <AtButton onClick={this.props.minus.bind(this)} type='primary'>
-            -
-          </AtButton>
+        <Swiper
+          className='index-swiper'
+          indicatorColor='#ccc'
+          indicatorActiveColor='#ffd300'
+          autoplay
+          indicatorDots
+        >
+          {this.state.slides.map(slide => (
+            <SwiperItem
+              onClick={this.goPageDetail.bind(this, slide.id)}
+              key={slide.id}
+            >
+              <Image
+                src={slide.image}
+                mode='aspectFill'
+                className='index-swiper-image'
+              />
+              <View className='index-swiper-overlay' />
+              <Text className='index-swiper-title'>{slide.title}</Text>
+            </SwiperItem>
+          ))}
+        </Swiper>
+        <View className='index-list'>
+          <Text>{this.state.date}</Text>
         </View>
       </View>
     )
   }
 }
 
-const mapStateToProps = ({ counter }) => ({
-  count: counter.count
-})
-
-const mapDispatchToProps = dispatch => ({
-  add () { dispatch(add()) },
-  minus () { dispatch(minus()) }
-})
-
-export default connect(mapStateToProps, mapDispatchToProps)(Index)
+export default Index

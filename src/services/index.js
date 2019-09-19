@@ -6,3 +6,11 @@ import http from '@utils/request'
 export function getLatestNewsList () {
   return http.get(`/news/latest`)
 }
+
+/**
+ * 获取新闻详情
+ * @param {string}} id 新闻id
+ */
+export function getNewsDetail (id) {
+  return http.get(`/news/${id}`)
+}

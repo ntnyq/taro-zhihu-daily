@@ -1,5 +1,48 @@
 .index {
   flex-direction: column;
   width: 100%;
-  padding: 30px;
+
+  &-swiper {
+    position: relative;
+    height: 600px;
+
+    &-image {
+      display: block;
+      width: 100%;
+      height: 100%;
+    }
+
+    &-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: #5b7492;
+      opacity: .4;
+    }
+
+    &-title {
+      position: absolute;
+      right: 5%;
+      bottom: 100px;
+      width: 70%;
+      text-align: right;
+      line-height: 1.6em;
+      font-weight: bold;
+      font-size: 40px;
+      color: #fff;
+      text-shadow: 2px 2px 20px rgba(0, 0, 0, .5);
+
+      &:before {
+        content: "";
+        position: absolute;
+        bottom: -20px;
+        right: 0;
+        display: block;
+        width: 300px;
+        border: 4px solid $primary-color;
+      }
+    }
+  }
 }

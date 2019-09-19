@@ -26,9 +26,7 @@ const api = {
         const { statusCode, errMsg } = res
 
         if (statusCode === 200) {
-          // const resData = res.data
-          console.log(res.data)
-
+          return res.data || {}
         } else {
           Taro.showToast({
             title: errMsg || `返回成功，但状态码为${statusCode}`,
