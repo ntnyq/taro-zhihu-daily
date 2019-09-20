@@ -4,6 +4,7 @@ module.exports = {
     NODE_ENV: '"production"'
   },
   defineConstants: {
+    API_HOST: `"https://news-at.zhihu.com/api/4"`
   },
   weapp: {},
   h5: {

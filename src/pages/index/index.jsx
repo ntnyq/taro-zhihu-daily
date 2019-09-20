@@ -11,7 +11,7 @@ import {
   getNewsListByDate,
 } from '@services'
 import { AtFab } from 'taro-ui'
-import { formatTime } from '@goy/utils'
+import { formatTime } from '@utils'
 
 import './style.scss'
 
@@ -25,7 +25,7 @@ class Index extends Component {
 
     this.state = {
       showGoTop: false,
-      dateOffset: 0,
+      dateOffset: -1,
       slides: [],
       list: []
     }
@@ -89,6 +89,7 @@ class Index extends Component {
           indicatorColor='#ccc'
           indicatorActiveColor='#ffd300'
           autoplay
+          circular
           indicatorDots
         >
           {this.state.slides.map(slide => (

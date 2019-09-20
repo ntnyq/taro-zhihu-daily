@@ -2,7 +2,7 @@
   "miniprogramRoot": "./dist",
   "projectname": "taro-template",
   "description": "A taro based weapp project",
-  "appid": "touristappid",
+  "appid": "wx9d6b29dabbb43222",
   "setting": {
     "urlCheck": true,
     "es6": false,

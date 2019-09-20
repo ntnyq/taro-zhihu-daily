@@ -39,7 +39,7 @@ class Detail extends Component {
   onShareAppMessage () {
     const { title, image } = this.state
     const { id } = this.$router.params
-    const path = `/pages/detail?id=${id}`
+    const path = `/pages/detail/index?id=${id}`
 
     return {
       title,
