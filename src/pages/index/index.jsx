@@ -8,7 +8,10 @@ import {
 } from '@tarojs/components'
 import {
   getLatestNewsList,
+  getNewsListByDate,
 } from '@services'
+import { AtFab } from 'taro-ui'
+import { formatTime } from '@goy/utils'
 
 import './style.scss'
 
@@ -21,28 +24,20 @@ class Index extends Component {
     super(props)
 
     this.state = {
-      date: '',
+      showGoTop: false,
+      dateOffset: 0,
       slides: [],
-      news: []
+      list: []
     }
   }
 
   componentDidMount () {
     getLatestNewsList()
       .then(res => {
-        const {
-          date,
-          stories,
-          top_stories
-        } = res
-
         this.setState({
-          slides: top_stories,
-          date,
-          news: stories
+          slides: res.top_stories,
+          list: [res]
         })
-
-        console.log(this.state.news)
       })
   }
 
@@ -56,6 +51,34 @@ class Index extends Component {
     Taro.navigateTo({
       url: `/pages/detail/index?id=${id}`
     })
+  }
+
+  scrollToTop () {
+    Taro.pageScrollTo({ scrollTop: 0 })
+  }
+
+  onPageScroll ({ scrollTop }) {
+    const SHOW_GO_TOP_OFFSET = 120
+    const shouldShowGoTop = scrollTop > SHOW_GO_TOP_OFFSET && !this.state.showGoTop
+    const shouldHideGoTop = scrollTop < SHOW_GO_TOP_OFFSET && this.state.showGoTop
+
+    shouldShowGoTop && this.setState({ showGoTop: true })
+    shouldHideGoTop && this.setState({ showGoTop: false })
+  }
+
+  onReachBottom () {
+    const now = new Date()
+
+    now.setDate(now.getDate() + this.state.dateOffset)
+
+    const date = formatTime(now, 'yyyyMMdd')
+
+    this.setState({ dateOffset: this.state.dateOffset - 1 })
+
+    getNewsListByDate(date)
+      .then(res => {
+        this.setState({ list: [...this.state.list, res] })
+      })
   }
 
   render () {
@@ -83,9 +106,37 @@ class Index extends Component {
             </SwiperItem>
           ))}
         </Swiper>
-        <View className='index-list'>
-          <Text>{this.state.date}</Text>
+        <View className='index-list-wrap'>
+          {this.state.list.map(item => (
+            <View
+              key={item.date}
+              className='index-list-item'
+            >
+              <View className='index-list-item-header'>
+                <Text className='index-list-item-title'>{item.date}</Text>
+              </View>
+              <View className='index-list-item-main'>
+                {item.stories.map(story => (
+                  <View
+                    onClick={this.goPageDetail.bind(this, story.id)}
+                    key={story.id}
+                    className='index-list-item-news'
+                  >
+                    <Image
+                      src={story.images[0]}
+                      mode='aspectFill'
+                      className='index-list-item-news-image'
+                    />
+                    <View className='index-list-item-news-title'>{story.title}</View>
+                  </View>
+                ))}
+              </View>
+            </View>
+          ))}
         </View>
+        {this.state.showGoTop && <AtFab onClick={this.scrollToTop.bind(this)} size='small'>
+          <Text className='at-fab__icon at-icon at-icon-arrow-up' />
+        </AtFab>}
       </View>
     )
   }

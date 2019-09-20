@@ -1,4 +1,6 @@
-$color-brand: #f00;
+$color-brand: $primary-color;
 
 @import "~taro-ui/dist/style/components/button.scss";
 @import "~taro-ui/dist/style/components/avatar.scss";
+@import "~taro-ui/dist/style/components/fab.scss";
+@import "~taro-ui/dist/style/components/icon.scss";
