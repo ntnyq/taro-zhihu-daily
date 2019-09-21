@@ -18,13 +18,35 @@ class App extends Component {
   config = {
     pages: [
       'pages/index/index',
-      'pages/detail/index'
+      'pages/user/index',
+      'pages/favorite/index',
+      'pages/detail/index',
+      'pages/author/index',
+      'pages/thank/index',
+      'pages/copy/index'
     ],
     window: {
       backgroundTextStyle: 'light',
       navigationBarBackgroundColor: '#fff',
-      navigationBarTitleText: 'WeChat',
+      navigationBarTitleText: '喔喔日推',
       navigationBarTextStyle: 'black'
+    },
+    tabBar: {
+      color: "#bfbfbf",
+      selectedColor: "#ffd300",
+      backgroundColor: "#fff",
+      borderStyle: '#fff',
+      list: [{
+        pagePath: "pages/index/index",
+        iconPath: "./assets/tabbar/news.png",
+        selectedIconPath: "./assets/tabbar/news_active.png",
+        text: "消息"
+      }, {
+        pagePath: "pages/user/index",
+        iconPath: "./assets/tabbar/user.png",
+        selectedIconPath: "./assets/tabbar/user_active.png",
+        text: "个人"
+      }]
     }
   }
 

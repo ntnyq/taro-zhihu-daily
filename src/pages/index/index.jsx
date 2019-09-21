@@ -15,47 +15,37 @@ import { formatTime } from '@utils'
 
 import './style.scss'
 
+const INIT_DATE_OFFSET = 0
+
 class Index extends Component {
   config = {
-    navigationBarTitleText: '首页'
+    navigationBarTitleText: '首页',
+    enablePullDownRefresh: true
   }
 
   constructor(props) {
     super(props)
 
     this.state = {
-      showGoTop: false,
-      dateOffset: -1,
+      latestDate: '',
+      dateOffset: INIT_DATE_OFFSET,
       slides: [],
-      list: []
+      list: [],
+      showGoTop: false
     }
   }
 
-  componentDidMount () {
-    getLatestNewsList()
-      .then(res => {
-        this.setState({
-          slides: res.top_stories,
-          list: [res]
-        })
-      })
+  componentWillMount () {
+    this.fetchLatestNews()
   }
+
+  componentDidMount () { }
 
   componentWillUnmount () { }
 
   componentDidShow () { }
 
   componentDidHide () { }
-
-  goPageDetail (id) {
-    Taro.navigateTo({
-      url: `/pages/detail/index?id=${id}`
-    })
-  }
-
-  scrollToTop () {
-    Taro.pageScrollTo({ scrollTop: 0 })
-  }
 
   onPageScroll ({ scrollTop }) {
     const SHOW_GO_TOP_OFFSET = 120
@@ -66,19 +56,60 @@ class Index extends Component {
     shouldHideGoTop && this.setState({ showGoTop: false })
   }
 
+  async onPullDownRefresh () {
+    Taro.showLoading({ title: '加载中，请稍等' })
+
+    try {
+      await this.fetchLatestNews()
+
+      this.setState({ dateOffset: INIT_DATE_OFFSET })
+      Taro.stopPullDownRefresh()
+      Taro.hideLoading()
+    } catch (error) {
+
+      Taro.stopPullDownRefresh()
+      Taro.hideLoading()
+    }
+  }
+
   onReachBottom () {
-    const now = new Date()
+    this.fetchNewsByDate()
+  }
 
-    now.setDate(now.getDate() + this.state.dateOffset)
+  async fetchNewsByDate () {
+    const latestDate = this.state.latestDate
+    const year = latestDate.slice(0, 4)
+    const month = latestDate.slice(4, 6)
+    const day = latestDate.slice(-2)
+    const time = new Date(`${year}/${month}/${day}`)
 
-    const date = formatTime(now, 'yyyyMMdd')
+    time.setDate(time.getDate() + this.state.dateOffset)
 
-    this.setState({ dateOffset: this.state.dateOffset - 1 })
+    const date = formatTime(time, 'yyyyMMdd')
 
-    getNewsListByDate(date)
-      .then(res => {
-        this.setState({ list: [...this.state.list, res] })
-      })
+    this.setState({ dateOffset: --this.state.dateOffset })
+
+    const res = await getNewsListByDate(date)
+
+    this.setState({ list: [...this.state.list, res] })
+  }
+
+  async fetchLatestNews () {
+    const res = await getLatestNewsList()
+
+    this.setState({
+      latestDate: res.date,
+      slides: res.top_stories || [],
+      list: [res]
+    })
+  }
+
+  goPageDetail (id) {
+    Taro.navigateTo({ url: `/pages/detail/index?id=${id}` })
+  }
+
+  scrollToTop () {
+    Taro.pageScrollTo({ scrollTop: 0 })
   }
 
   render () {
@@ -135,9 +166,12 @@ class Index extends Component {
             </View>
           ))}
         </View>
-        {this.state.showGoTop && <AtFab onClick={this.scrollToTop.bind(this)} size='small'>
-          <Text className='at-fab__icon at-icon at-icon-arrow-up' />
-        </AtFab>}
+        {this.state.showGoTop &&
+          (<AtFab
+            onClick={this.scrollToTop.bind(this)}
+          >
+            <Text className='at-fab__icon at-icon at-icon-arrow-up' />
+          </AtFab>)}
       </View>
     )
   }

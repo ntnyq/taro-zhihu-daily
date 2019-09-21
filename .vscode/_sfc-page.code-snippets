@@ -1,0 +1,41 @@
+{
+  "Taro Page Component": {
+    "prefix": "tpage",
+    "body": [
+      "import Taro, { Component } from '@tarojs/taro'",
+      "import {",
+      "  View",
+      "} from '@tarojs/components'",
+      "",
+      "class Demo extends Component {",
+      "  config = {",
+      "    navigationBarTitleText: 'demo'",
+      "  }",
+      "",
+      "  constructor(props) {",
+      "    super(props)",
+      "",
+      "    this.state = {",
+      "",
+      "    }",
+      "  }",
+      "",
+      "  componentWillMount () { }",
+      "",
+      "  componentDidMount () { }",
+      "",
+      "  render () {",
+      "    return (",
+      "      <View className='demo'>",
+      "",
+      "      </View>",
+      "    )",
+      "  }",
+      "}",
+      "",
+      "export default Demo",
+      ""
+    ],
+    "description": "Taro Page Component"
+  }
+}

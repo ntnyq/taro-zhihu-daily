@@ -57,6 +57,7 @@ const config = {
     '@store': resolve('src/store'),
     '@services': resolve('src/services'),
     '@assets': resolve('src/assets'),
+    '@images': resolve('src/assets/images'),
     '@config': resolve('src/config'),
     '@components': resolve('src/components'),
     '@styles': resolve('src/styles'),

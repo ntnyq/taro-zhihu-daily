@@ -17,6 +17,9 @@
       "@assets/*": [
         "src/assets/*"
       ],
+      "@images/*": [
+        "src/assets/images/*"
+      ],
       "@config/*": [
         "src/config/*"
       ],

@@ -1,0 +1,31 @@
+.author {
+  .contributor {
+    &-list {
+      position: relative;
+      padding: 24px;
+    }
+
+    &-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 12px 0;
+
+      &-main {
+        position: relative;
+        flex: 1 0;
+        margin-left: 20px;
+      }
+
+      &-name {
+        margin-bottom: 10px;
+        font-size: 32px;
+      }
+
+      &-description {
+        font-size: 22px;
+        color: #666;
+      }
+    }
+  }
+}
