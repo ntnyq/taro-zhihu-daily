@@ -26,6 +26,8 @@
       }
 
       &-username {
+        flex: 1 0;
+        margin-left: 20px;
         color: #666;
       }
     }
@@ -74,6 +76,41 @@
 
         .item-extra__icon-arrow {
           font-size: 32px;
+        }
+      }
+
+      .feedback {
+        &-wrap {
+          position: relative;
+        }
+
+        &-line {
+          position: absolute;
+          bottom: 0;
+          left: 24px;
+          right: 0;
+          border-bottom: 1px solid #eee;
+        }
+
+        &-btn {
+          display: block;
+          height: 84px;
+          line-height: 84px;
+          padding-left: 24px;
+          border: none;
+          text-align: left;
+          font-weight: 500;
+          font-size: 24px;
+          color: #666;
+        }
+
+        &-arrow {
+          position: absolute;
+          top: 50%;
+          right: 12px;
+          font-size: 32px;
+          // color: #ccc;
+          transform: translateY(-50%);
         }
       }
     }

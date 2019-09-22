@@ -4,6 +4,9 @@ import { Provider } from '@tarojs/redux'
 
 import store from '@store'
 
+import { setUserInfo } from '@actions/user'
+import { USER_INFO } from '@config/USER'
+
 import Index from './pages/index/index'
 
 import './app.scss'
@@ -18,10 +21,10 @@ class App extends Component {
   config = {
     pages: [
       'pages/index/index',
-      'pages/user/index',
       'pages/favorite/index',
       'pages/detail/index',
       'pages/author/index',
+      'pages/user/index',
       'pages/thank/index',
       'pages/copy/index'
     ],
@@ -40,7 +43,7 @@ class App extends Component {
         pagePath: "pages/index/index",
         iconPath: "./assets/tabbar/news.png",
         selectedIconPath: "./assets/tabbar/news_active.png",
-        text: "消息"
+        text: "日推"
       }, {
         pagePath: "pages/user/index",
         iconPath: "./assets/tabbar/user.png",
@@ -50,8 +53,12 @@ class App extends Component {
     }
   }
 
+  componentWillMount () {
+  }
+
   componentDidMount () {
     this.updateApp()
+    this.checkAuth()
   }
 
   componentDidShow () { }
@@ -59,6 +66,19 @@ class App extends Component {
   componentDidHide () { }
 
   componentDidCatchError () { }
+
+  async checkAuth () {
+    const { authSetting } = await Taro.getSetting()
+
+    if (authSetting['scope.userInfo']) {
+      const { userInfo = {} } = await Taro.getUserInfo()
+      const { nickName, avatarUrl } = userInfo
+
+      store.dispatch(setUserInfo({ nickName, avatarUrl }))
+
+      Taro.setStorage({ key: USER_INFO, data: { nickName, avatarUrl } })
+    }
+  }
 
   updateApp () {
     if (Taro.canIUse('getUpdateManager')) {

@@ -1,7 +1,9 @@
 .detail {
   position: relative;
   height: 100%;
+  padding-bottom: 100px;
   overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
 
   &-banner {
     position: relative;
@@ -40,6 +42,49 @@
     position: relative;
     padding: 20px;
     line-height: 1.8em;
+  }
+
+  &-action {
+    position: fixed;
+    left: 0;
+    bottom: 0;
+    z-index: 999;
+    display: flex;
+    width: 100%;
+    border-top: 1px solid #efefef;
+
+    .action-item {
+      position: relative;
+      width: 100%;
+      padding: 0;
+      background-color: #fff;
+      border-radius: 0;
+
+      &::after {
+        border: none;
+      }
+
+      &-icon {
+        margin-right: 20px;
+        font-size: 40px;
+        color: darkblue;
+      }
+
+      &-text {
+        font-size: 28px;
+      }
+
+      &-line {
+        position: absolute;
+        top: 50%;
+        right: 0;
+        display: block;
+        width: 2px;
+        height: 40%;
+        background-color: darkblue;
+        transform: translateY(-50%);
+      }
+    }
   }
 
   .at-fab {

@@ -1,6 +1,10 @@
 import { combineReducers } from 'redux'
-import counter from './counter'
+import user from './user'
+import news from './news'
 
-export default combineReducers({
-  counter
+const rootReducer = combineReducers({
+  user,
+  news
 })
+
+export default rootReducer

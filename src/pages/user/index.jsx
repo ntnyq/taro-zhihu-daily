@@ -1,4 +1,5 @@
 import Taro, { Component } from '@tarojs/taro'
+import { connect } from '@tarojs/redux'
 import {
   View,
   Text,
@@ -7,8 +8,10 @@ import {
   AtButton,
   AtAvatar,
   AtList,
-  AtListItem
+  AtListItem,
+  AtIcon
 } from 'taro-ui'
+import { USER_INFO } from '@config/USER'
 
 import './style.scss'
 
@@ -34,12 +37,22 @@ class User extends Component {
   }
 
   async componentWillMount () {
-    const { authSetting } = await Taro.getSetting()
+    const { data = {} } = await Taro.getStorage({ key: USER_INFO })
+    const { nickName, avatarUrl } = data
 
-    if (authSetting['scope.userInfo']) {
-      const { userInfo = {} } = await Taro.getUserInfo()
-      const { nickName, avatarUrl } = userInfo
+    if (nickName || avatarUrl) {
+      this.setState({ hasAuth: true, nickName, avatarUrl })
+    }
+  }
 
+  componentDidMount () {
+
+  }
+
+  componentWillReceiveProps (nextProps) {
+    const { nickName, avatarUrl } = nextProps
+
+    if (nickName || avatarUrl) {
       this.setState({ hasAuth: true, nickName, avatarUrl })
     }
   }
@@ -52,7 +65,9 @@ class User extends Component {
     const { userInfo = {} } = detail
     const { nickName, avatarUrl } = userInfo
 
-    this.setState({ hasAuth: true, nickName, avatarUrl })
+    if (nickName) {
+      this.setState({ hasAuth: true, nickName, avatarUrl })
+    }
   }
 
   render () {
@@ -90,6 +105,12 @@ class User extends Component {
             <AtListItem
               onClick={this.goTargetPage.bind(this, 'favorite')}
               title='我的收藏'
+              arrow='right'
+            />
+            <AtListItem
+              onClick={() => { Taro.openSetting() }}
+              title='权限管理'
+              arrow='right'
             />
             <AtListItem
               onClick={this.clearStorage.bind(this)}
@@ -103,6 +124,21 @@ class User extends Component {
             <Text>关于喔喔日推</Text>
           </View>
           <AtList hasBorder={false}>
+            <View className='feedback-wrap'>
+              <AtButton
+                className='feedback-btn'
+                openType='feedback'
+              >
+                意见反馈
+              </AtButton>
+              <AtIcon
+                className='feedback-arrow'
+                value='chevron-right'
+                size=''
+                color='#ccc'
+              />
+              <View className='feedback-line' />
+            </View>
             <AtListItem
               onClick={this.goTargetPage.bind(this, 'copy')}
               title='版权声明'
@@ -126,4 +162,9 @@ class User extends Component {
   }
 }
 
-export default User
+const mapStateToProps = ({ user }) => ({
+  nickName: user.nickName,
+  avatarUrl: user.avatarUrl
+})
+
+export default connect(mapStateToProps)(User)

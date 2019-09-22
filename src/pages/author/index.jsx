@@ -1,8 +1,6 @@
 import Taro, { Component } from '@tarojs/taro'
-import {
-  View
-} from '@tarojs/components'
-import { AtAvatar } from 'taro-ui'
+import { View, Button } from '@tarojs/components'
+import { AtAvatar, AtIcon, AtDivider } from 'taro-ui'
 
 import './style.scss'
 
@@ -43,9 +41,27 @@ class Author extends Component {
                 <View className='contributor-item-name'>{item.name}</View>
                 <View className='contributor-item-description'>{item.description}</View>
               </View>
+              <View className='contributor-item-wechat'>
+                <Button
+                  className='contributor-item-wechat-btn'
+                  hoverClass='none'
+                  openType='contact'
+                >
+                  <AtIcon
+                    className='contributor-item-wechat-icon'
+                    value='message'
+                  />
+                </Button>
+              </View>
             </View>
           ))}
         </View>
+        <AtDivider
+          content='点击图标，直接与作者对话'
+          lineColor='#efefef'
+          fontColor='#ccc'
+          fontSize='24'
+        />
       </View>
     )
   }

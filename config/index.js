@@ -65,7 +65,7 @@ const config = {
   },
   copy: {
     patterns: [
-      { from: 'src/components/ParserRichText/Parser/', to: 'dist/components/ParserRichText/Parser/' }
+      { from: 'src/components/third-part/Parser', to: 'dist/components/third-part/Parser' }
     ],
     options: {
     }

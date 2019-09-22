@@ -26,6 +26,26 @@
         font-size: 22px;
         color: #666;
       }
+
+      &-wechat {
+        width: 60px;
+        margin-left: 20px;
+        text-align: right;
+
+        &-btn {
+          padding: 0;
+          background-color: transparent;
+
+          &::after {
+            border: none;
+          }
+        }
+
+        &-icon {
+          font-size: 32px;
+          color: $primary-color;
+        }
+      }
     }
   }
 }

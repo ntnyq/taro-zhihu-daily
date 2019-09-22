@@ -19,7 +19,7 @@ const INIT_DATE_OFFSET = 0
 
 class Index extends Component {
   config = {
-    navigationBarTitleText: '首页',
+    navigationBarTitleText: '日推',
     enablePullDownRefresh: true
   }
 
@@ -102,6 +102,9 @@ class Index extends Component {
       slides: res.top_stories || [],
       list: [res]
     })
+
+    // TODO 通过页面内容高度决定是否继续加载
+    res.stories <= 2 && this.fetchNewsByDate()
   }
 
   goPageDetail (id) {

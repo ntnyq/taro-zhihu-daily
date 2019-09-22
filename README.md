@@ -1,3 +1,21 @@
 # taro-template
 
 Taro 小程序模板。
+
+## 踩坑记录
+
+### 页面
+
+页面设置 `height: 100%; overflow-y: auto;` 后会出现滑动不流程，解决方案： `-webkit-overflow-scrolling: touch;`。
+
+### taro-ui 组件库
+
+__AtIcon__ 组件的 `size` 属性渲染后单位为 `px`，而不是小程序端的 `rpx`，且无法直接用 `wxss` 来覆盖。若设置字符串格式且带单位如 `<AtIcon size='32rpx' />`，`rpx` 单位会被忽略，仍然被渲染为 32px。
+
+解决方案:
+
+``` jsx
+<AtIcon size='' />
+```
+
+设置 `size` 为空，则会被渲染为 NAN，行内样式失效，此时 `wxss` 内的样式会起作用。

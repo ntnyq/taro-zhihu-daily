@@ -99,7 +99,7 @@ class ParserRichText extends Component {
 
   config = {
     usingComponents: {
-      parser: './Parser/index'
+      parser: '../../third-part/Parser/index'
     }
   }
 

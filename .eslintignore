@@ -1,5 +1,5 @@
 dist
 node_modules
 
-# RichTextParser
-src/components/ParserRichText
+# ignore lint for third-part lib
+src/components/third-part
