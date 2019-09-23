@@ -1,6 +1,6 @@
 {
   "miniprogramRoot": "./dist",
-  "projectname": "taro-template",
+  "projectname": "taro-zhihu-daily",
   "description": "A taro based weapp project",
   "appid": "wx9d6b29dabbb43222",
   "setting": {

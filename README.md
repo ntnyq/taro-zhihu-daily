@@ -1,6 +1,6 @@
-# taro-template
+# taro-zhihu-daily
 
-Taro 小程序模板。
+Taro 版本的知乎日报小程序，暂时仅支持微信小程序端。
 
 ## 踩坑记录
 

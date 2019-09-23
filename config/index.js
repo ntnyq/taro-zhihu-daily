@@ -18,7 +18,7 @@ const sassImporter = url => {
 }
 
 const config = {
-  projectName: 'taro-template',
+  projectName: 'taro-zhihu-daily',
   date: '2019-9-19',
   designWidth: 750,
   deviceRatio: {
