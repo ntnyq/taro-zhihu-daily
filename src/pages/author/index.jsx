@@ -23,10 +23,6 @@ class Author extends Component {
     }
   }
 
-  componentWillMount () { }
-
-  componentDidMount () { }
-
   render () {
     return (
       <View className='author'>

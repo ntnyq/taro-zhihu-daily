@@ -37,3 +37,16 @@ export function formatTime (value, fmt = 'yyyy-MM-dd hh:mm:ss') {
 
   return fmt
 }
+
+/**
+ * 检测是否为空对象
+ * @param {object} obj 被检测的对象 默认为空对象
+ * @returns {boolean} 检查结果
+ */
+export function isEmptyObject (obj = {}) {
+  for (const key in obj) {
+    return false
+  }
+
+  return true
+}

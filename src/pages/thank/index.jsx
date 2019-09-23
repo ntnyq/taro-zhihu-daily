@@ -1,11 +1,6 @@
 import Taro, { Component } from '@tarojs/taro'
-import {
-  View,
-  Text
-} from '@tarojs/components'
-import {
-  AtNoticebar
-} from 'taro-ui'
+import { View, Text } from '@tarojs/components'
+import { AtNoticebar } from 'taro-ui'
 
 import './style.scss'
 
@@ -13,10 +8,6 @@ class Thank extends Component {
   config = {
     navigationBarTitleText: '致谢'
   }
-
-  componentWillMount () { }
-
-  componentDidMount () { }
 
   copyText (data) {
     Taro.setClipboardData({
@@ -33,6 +24,7 @@ class Thank extends Component {
         <AtNoticebar close>
           点击链接，即可复制 URL 至浏览器中打开。
         </AtNoticebar>
+
         <View className='card'>
           感谢 <Text
             onClick={this.copyText.bind(this, 'https://www.zhihu.com/')}

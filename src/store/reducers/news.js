@@ -1,5 +1,5 @@
 import Taro from '@tarojs/taro'
-import { FAVORITE_NEWS_LIST } from '@config/NEWS'
+import { FAVORITE_LIST } from '@config/storage-key'
 import {
   ADD_FAVORITE_NEWS,
   REMOVE_FAVORITE_NEWS,
@@ -7,7 +7,7 @@ import {
 } from '@constants/news'
 
 const INITIAL_STATE = {
-  favoriteList: Taro.getStorageSync(FAVORITE_NEWS_LIST) || []
+  favoriteList: Taro.getStorageSync(FAVORITE_LIST) || []
 }
 
 function news (state = INITIAL_STATE, action) {
@@ -15,28 +15,23 @@ function news (state = INITIAL_STATE, action) {
 
   switch (action.type) {
     case ADD_FAVORITE_NEWS:
-      let addResult = state.favoriteList
-      const hasAlreadyInList = state.favoriteList.includes(item => item.id === payload.news.id)
+      const addResult = [payload.news, ...state.favoriteList]
 
-      if (!hasAlreadyInList) {
-        addResult = [payload.news, ...addResult]
-      }
-
-      Taro.setStorageSync(FAVORITE_NEWS_LIST, addResult)
+      Taro.setStorageSync(FAVORITE_LIST, addResult)
 
       return { ...state, favoriteList: addResult }
 
     case REMOVE_FAVORITE_NEWS:
       const removeResult = state.favoriteList.filter(item => item.id !== payload.id)
 
-      Taro.setStorageSync(FAVORITE_NEWS_LIST, removeResult)
+      Taro.setStorageSync(FAVORITE_LIST, removeResult)
 
       return { ...state, favoriteList: removeResult }
 
     case CLEAR_FAVOORITE_NEWS:
       const clearResult = []
 
-      Taro.setStorageSync(FAVORITE_NEWS_LIST, clearResult)
+      Taro.setStorageSync(FAVORITE_LIST, clearResult)
 
       return { ...state, favoriteList: clearResult }
 

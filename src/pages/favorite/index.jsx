@@ -23,8 +23,6 @@ class Favorite extends Component {
     }
   }
 
-  componentWillMount () { }
-
   componentDidMount () { }
 
   clearFavorite () {
@@ -32,11 +30,15 @@ class Favorite extends Component {
 
     Taro.showModal({
       title: '提示',
-      content: '确定要清除所有收藏吗，清除后无法恢复？',
+      content: '确定清除所有收藏吗，清除后无法恢复？',
       success (res) {
         res.confirm && _this.props.dispatchClearFavoriteNews()
       }
     })
+  }
+
+  goHomePage () {
+    Taro.switchTab({ url: '/pages/index/index' })
   }
 
   goDetailPage (id) {
@@ -78,11 +80,11 @@ class Favorite extends Component {
           : (<View className='no-content'>
             <Text className='no-content-tip'>暂无收藏日推</Text>
             <AtButton
-              onClick={() => {
-                Taro.switchTab({ url: '/pages/index/index' })
-              }}
+              onClick={this.goHomePage.bind(this)}
               type='primary'
-            >点击回到首页</AtButton>
+            >
+              点击回到首页
+          </AtButton>
           </View>)}
       </View>
     )

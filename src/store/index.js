@@ -7,9 +7,7 @@ const showLogger = process.env.NODE_ENV === 'development' && process.env.TARO_EN
 
 const middlewares = [
   thunkMiddleware,
-  ...(showLogger
-    ? [createLogger()]
-    : [])
+  ...(showLogger ? [createLogger()] : [])
 ]
 
 export default createStore(rootReducer, applyMiddleware(...middlewares))

@@ -1,1 +1,0 @@
-export const FAVORITE_NEWS_LIST = 'FAVORITE_NEWS_LIST'

@@ -4,8 +4,7 @@ import { Provider } from '@tarojs/redux'
 
 import store from '@store'
 
-import { setUserInfo } from '@actions/user'
-import { USER_INFO } from '@config/USER'
+import { setUserInfo, clearUserInfo } from '@actions/user'
 
 import Index from './pages/index/index'
 
@@ -21,10 +20,10 @@ class App extends Component {
   config = {
     pages: [
       'pages/index/index',
-      'pages/favorite/index',
       'pages/detail/index',
-      'pages/author/index',
+      'pages/favorite/index',
       'pages/user/index',
+      'pages/author/index',
       'pages/thank/index',
       'pages/copy/index'
     ],
@@ -53,9 +52,6 @@ class App extends Component {
     }
   }
 
-  componentWillMount () {
-  }
-
   componentDidMount () {
     this.updateApp()
     this.checkAuth()
@@ -71,12 +67,13 @@ class App extends Component {
     const { authSetting } = await Taro.getSetting()
 
     if (authSetting['scope.userInfo']) {
-      const { userInfo = {} } = await Taro.getUserInfo()
-      const { nickName, avatarUrl } = userInfo
+      try {
+        const { userInfo = {} } = await Taro.getUserInfo()
 
-      store.dispatch(setUserInfo({ nickName, avatarUrl }))
-
-      Taro.setStorage({ key: USER_INFO, data: { nickName, avatarUrl } })
+        store.dispatch(setUserInfo({ userInfo }))
+      } catch (err) {
+        store.dispatch(clearUserInfo())
+      }
     }
   }
 

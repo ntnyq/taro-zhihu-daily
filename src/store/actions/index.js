@@ -1,5 +1,5 @@
 /**
- *
+ * 创建普通 Action
  * @param {string} type
  */
 export function createAction (type) {
@@ -7,7 +7,7 @@ export function createAction (type) {
 }
 
 /**
- *
+ * 创建 API Action
  * @param {string} actionType
  * @param {function} func
  */

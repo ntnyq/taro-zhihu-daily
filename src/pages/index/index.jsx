@@ -6,12 +6,12 @@ import {
   Swiper,
   SwiperItem
 } from '@tarojs/components'
+import { AtFab } from 'taro-ui'
+import { formatTime } from '@utils'
 import {
   getLatestNewsList,
   getNewsListByDate,
 } from '@services'
-import { AtFab } from 'taro-ui'
-import { formatTime } from '@utils'
 
 import './style.scss'
 
@@ -35,11 +35,9 @@ class Index extends Component {
     }
   }
 
-  componentWillMount () {
+  componentDidMount () {
     this.fetchLatestNews()
   }
-
-  componentDidMount () { }
 
   componentWillUnmount () { }
 
@@ -63,10 +61,10 @@ class Index extends Component {
       await this.fetchLatestNews()
 
       this.setState({ dateOffset: INIT_DATE_OFFSET })
+
       Taro.stopPullDownRefresh()
       Taro.hideLoading()
     } catch (error) {
-
       Taro.stopPullDownRefresh()
       Taro.hideLoading()
     }

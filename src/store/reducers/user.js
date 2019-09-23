@@ -1,10 +1,12 @@
+import Taro from '@tarojs/taro'
 import {
+  CLEAR_USER_INFO,
   SET_USER_INFO
 } from '@constants/user'
+import { USER_INFO } from '@config/storage-key'
 
 const INITIAL_STATE = {
-  nickName: '',
-  avatarUrl: ''
+  userInfo: Taro.getStorageSync(USER_INFO) || {}
 }
 
 function user (state = INITIAL_STATE, action) {
@@ -12,10 +14,19 @@ function user (state = INITIAL_STATE, action) {
 
   switch (action.type) {
     case SET_USER_INFO:
+      Taro.setStorageSync(USER_INFO, payload.userInfo)
+
       return {
         ...state,
-        nickName: payload.nickName,
-        avatarUrl: payload.avatarUrl
+        userInfo: payload.userInfo
+      }
+
+    case CLEAR_USER_INFO:
+      Taro.removeStorageSync(USER_INFO)
+
+      return {
+        ...state,
+        userInfo: {}
       }
 
     default:

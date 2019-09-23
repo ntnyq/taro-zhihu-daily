@@ -1,9 +1,6 @@
 import Taro, { Component } from '@tarojs/taro'
 import { connect } from '@tarojs/redux'
-import {
-  View,
-  Text,
-} from '@tarojs/components'
+import { View, Text } from '@tarojs/components'
 import {
   AtButton,
   AtAvatar,
@@ -11,7 +8,8 @@ import {
   AtListItem,
   AtIcon
 } from 'taro-ui'
-import { USER_INFO } from '@config/USER'
+import { setUserInfo, clearUserInfo } from '@actions/user'
+import { isEmptyObject } from '@utils'
 
 import './style.scss'
 
@@ -24,37 +22,28 @@ class User extends Component {
     super(props)
 
     this.state = {
-      hasAuth: false,
-      nickName: '',
-      avatarUrl: ''
+      hasAuth: false
     }
   }
 
   async clearStorage () {
     await Taro.clearStorage()
 
+    this.props.dispatchClearUserInfo()
+
     Taro.showToast({ title: '清理成功', icon: 'success' })
   }
 
-  async componentWillMount () {
-    const { data = {} } = await Taro.getStorage({ key: USER_INFO })
-    const { nickName, avatarUrl } = data
-
-    if (nickName || avatarUrl) {
-      this.setState({ hasAuth: true, nickName, avatarUrl })
-    }
-  }
-
   componentDidMount () {
+    const hasAuth = !isEmptyObject(this.props.userInfo)
 
+    this.setState({ hasAuth })
   }
 
-  componentWillReceiveProps (nextProps) {
-    const { nickName, avatarUrl } = nextProps
+  componentWillReceiveProps ({ userInfo = {} }) {
+    const shouldRenderUserInfo = !this.state.hasAuth && !isEmptyObject(userInfo)
 
-    if (nickName || avatarUrl) {
-      this.setState({ hasAuth: true, nickName, avatarUrl })
-    }
+    this.setState({ hasAuth: shouldRenderUserInfo })
   }
 
   goTargetPage (target) {
@@ -63,26 +52,23 @@ class User extends Component {
 
   getUserInfo ({ detail }) {
     const { userInfo = {} } = detail
-    const { nickName, avatarUrl } = userInfo
 
-    if (nickName) {
-      this.setState({ hasAuth: true, nickName, avatarUrl })
-    }
+    this.props.dispatchSetUserInfo({ userInfo })
   }
 
   render () {
+    const { userInfo: { nickName, avatarUrl } } = this.props
+
     return (
       <View className='user'>
         <View className='user-header'>
           {this.state.hasAuth
             ? (<View className='has-auth'>
               <AtAvatar
-                image={this.state.avatarUrl}
+                image={avatarUrl}
                 size='large'
               />
-              <Text className='has-auth-username'>
-                {this.state.nickName}
-              </Text>
+              <Text className='has-auth-username'>{nickName}</Text>
             </View>)
             : (<View className='no-auth'>
               <Text className='no-auth-text'>授权后，获取个性化内容</Text>
@@ -163,8 +149,16 @@ class User extends Component {
 }
 
 const mapStateToProps = ({ user }) => ({
-  nickName: user.nickName,
-  avatarUrl: user.avatarUrl
+  userInfo: user.userInfo
 })
 
-export default connect(mapStateToProps)(User)
+const mapActionToProps = dispatch => ({
+  dispatchSetUserInfo (userInfo) {
+    dispatch(setUserInfo(userInfo))
+  },
+  dispatchClearUserInfo () {
+    dispatch(clearUserInfo())
+  }
+})
+
+export default connect(mapStateToProps, mapActionToProps)(User)

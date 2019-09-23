@@ -19,7 +19,6 @@ import {
   Poster
 } from '@components/common'
 import { addFavoriteNews, removeFavoriteNews } from '@actions/news'
-import { USER_INFO } from '@config/USER'
 import { formatTime } from '@utils'
 
 import './style.scss'
@@ -40,22 +39,26 @@ class Detail extends Component {
     }
   }
 
-  componentWillMount () {
-    const { id /* = 9715332 */, share } = this.$router.params
+  componentDidMount () {
+    const { id /* = '9715332' */, share } = this.$router.params
 
     if (id) {
-      this.fetchNewsDetail(id)
+      const isFromShare = !!share
+      const { favoriteList = [] } = this.props
+      const isFavorite = favoriteList.findIndex(item => item.id == id) >= 0
 
-      this.setState({ id, isFromShare: !!share })
+      this.fetchNewsDetail(id)
+      this.setState({ id, isFromShare, isFavorite })
     } else {
-      this.goPageHome()
+      this.goHomePage()
     }
   }
 
-  componentDidMount () {
-    const isFavorite = this.props.favoriteList.includes(item => item.id === this.state.id)
+  componentWillReceiveProps ({ favoriteList }) {
+    console.log('componentWillReceiveProps triggered')
+    const isFavorite = favoriteList.includes(item => item.id === this.state.id)
 
-    isFavorite && this.setState({ isFavorite })
+    this.setState({ isFavorite })
   }
 
   onShareAppMessage () {
@@ -63,21 +66,10 @@ class Detail extends Component {
     const { id } = this.$router.params
     const path = `/pages/detail/index?id=${id}&share=true`
 
-    return {
-      title,
-      path,
-      imageUrl: image || '',
-      success () {
-        Taro.showToast({
-          title: '转发成功',
-          icon: 'success',
-          duration: 500
-        })
-      }
-    }
+    return { title, path, imageUrl: image || '' }
   }
 
-  goPageHome () {
+  goHomePage () {
     Taro.switchTab({ url: '/pages/index/index' })
   }
 
@@ -93,7 +85,7 @@ class Detail extends Component {
 
   generatePoster () {
     const { title, image } = this.state
-    const { nickName } = Taro.getStorageSync(USER_INFO)
+    const { userInfo: { nickName } = {} } = this.props
     const time = formatTime(new Date(), 'yyyy年MM月dd日')
     const posterData = {
       width: '750rpx',
@@ -205,6 +197,7 @@ class Detail extends Component {
       ]
     }
 
+    Taro.showLoading({ title: '努力生成中...' })
     this.setState({ posterData })
   }
 
@@ -286,7 +279,7 @@ class Detail extends Component {
           </Button>
         </View>
         {this.state.isFromShare && (
-          <AtFab onClick={this.goPageHome.bind(this)}>
+          <AtFab onClick={this.goHomePage.bind(this)}>
             <Text className='at-fab__icon at-icon at-icon-home' />
           </AtFab>
         )}
@@ -295,7 +288,8 @@ class Detail extends Component {
   }
 }
 
-const mapStateToProps = ({ news }) => ({
+const mapStateToProps = ({ user, news }) => ({
+  userInfo: user.userInfo,
   favoriteList: news.favoriteList
 })
 
