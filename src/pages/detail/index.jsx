@@ -4,7 +4,8 @@ import {
   View,
   Image,
   Text,
-  Button
+  Button,
+  RichText
 } from '@tarojs/components'
 import {
   AtFab,
@@ -14,7 +15,6 @@ import {
 } from 'taro-ui'
 import { getNewsDetail } from '@services'
 import {
-  RichTextParser,
   Loading,
   Poster
 } from '@components/common'
@@ -23,17 +23,26 @@ import { formatTime } from '@utils'
 
 import './style.scss'
 
+/**
+ *
+ * @param {array | null} matches
+ */
+function getStringFromMatched (matches) {
+  return (matches || [])[0] || ''
+}
+
 class Detail extends Component {
   constructor(props) {
     super(props)
 
     this.state = {
       id: undefined,
-      body: '',
       title: '',
       image: '',
-      isFavorite: false,
+      image_source: '',
+      questions: [],
       posterData: null,
+      isFavorite: false,
       isLoading: true,
       isFromShare: false
     }
@@ -55,7 +64,6 @@ class Detail extends Component {
   }
 
   componentWillReceiveProps ({ favoriteList }) {
-    console.log('componentWillReceiveProps triggered')
     const isFavorite = favoriteList.includes(item => item.id === this.state.id)
 
     this.setState({ isFavorite })
@@ -201,35 +209,150 @@ class Detail extends Component {
     this.setState({ posterData })
   }
 
-  async fetchNewsDetail (id) {
-    const { body, title, image } = await getNewsDetail(id)
+  formatRichText (html) {
+    // See https://github.com/llyer/wechat-app-zhihudaily/blob/master/pages/detail/detail.js
+    // ([\s\S]*?) 可以匹配换行等字符，(.*?) 是不可以的
+    const QUESTION_RE = /<div class=\"question\">([\s\S]*?)<\/a>(\n*)<\/div>(\n*)<\/div>/g
+    const QUESTION_TITLE_RE = /<h2.*?<\/h2>/g
+    const ANSWER_RE = /<div class=\"answer\">([\s\S]*?)<\/div>(\n*)<\/div>/g
+    const AVATAR_RE = /<img class=\"avatar\"(.*?).jpg\">/g
+    const AUTHOR_RE = /<span class=\"author\">(.*?)<\/span>/g
+    const BIO_RE = /<span class=\"bio\">(.*?)<\/span>/g
+    // TODO 正文，段落列表，需要添加兼容性，p标签是段落正文，figure 标签有可能内嵌图片信息
+    const CONTENT_RE = /(<p>|<figure).*?(<\/p>|<\/figure>)/g
+    const IMAGE_RE = /<img.*?>/i
+    const IMAGE_SOURCE_RE = /src=".*?"/i
 
-    this.setState({ body, title, image, isLoading: false })
+    const questionHtmlList = html.match(QUESTION_RE) || []
+
+    const questions = questionHtmlList.map(questionHtmlItem => {
+      const titleHtml = getStringFromMatched(questionHtmlItem.match(QUESTION_TITLE_RE))
+      const title = titleHtml.substring(27, titleHtml.length - 5) || ''
+      const answerHtmlList = questionHtmlItem.match(ANSWER_RE) || []
+      const answers = answerHtmlList.map(answerHtmlItem => {
+        const avatarHtml = getStringFromMatched(answerHtmlItem.match(AVATAR_RE))
+        const authorHtml = getStringFromMatched(answerHtmlItem.match(AUTHOR_RE))
+        const bioHtml = getStringFromMatched(answerHtmlItem.match(BIO_RE))
+
+        const avatar = avatarHtml.substring(25, avatarHtml.length - 2)
+        const author = authorHtml.substring(21, authorHtml.length - 8)
+        const bio = bioHtml.substring(18, bioHtml.length - 7)
+
+        const contentHtmlList = answerHtmlItem.match(CONTENT_RE) || []
+
+        const content = contentHtmlList.map(contentHtmlItem => {
+          const hasImage = IMAGE_RE.test(contentHtmlItem)
+          const temp = { type: '', content: '' }
+
+          if (hasImage) {
+            const tempContentHtml = getStringFromMatched(contentHtmlItem.match(IMAGE_SOURCE_RE))
+
+            temp.content = tempContentHtml.substring(5, tempContentHtml.length - 1)
+            temp.type = 'IMAGE'
+          } else {
+            temp.content = contentHtmlItem
+              // .replace(/<p>/g, '')
+              // .replace(/<\/p>/g, '')
+              // 不屏蔽 strong 标签
+              // .replace(/<strong>/g, '')
+              // .replace(/<\/strong>/g, '')
+              .replace(/<a.*?\/a>/g, '')
+              .replace(/&nbsp;/g, ' ')
+              .replace(/&ldquo;/g, '"')
+              .replace(/&rdquo;/g, '"')
+            temp.type = 'PARAGRAPH'
+          }
+
+          return temp
+        })
+
+        return { avatar, author, bio, content }
+      })
+
+      return { title, answers }
+    })
+
+    return questions
+  }
+
+  async fetchNewsDetail (id) {
+    const { body, title, image, image_source } = await getNewsDetail(id)
+    const questions = this.formatRichText(body)
+
+    this.setState({ title, image, image_source, questions, isLoading: false })
     title && Taro.setNavigationBarTitle({ title })
   }
 
   render () {
-    return this.state.isLoading ? <Loading /> : (
+    const {
+      title,
+      image,
+      image_source,
+      questions,
+      isLoading,
+      isFavorite,
+      isFromShare,
+      posterData,
+    } = this.state
+
+    const Questions = questions.map(question => (
+      <View
+        key={question.title}
+        className='question'
+      >
+        <View className='question-title'>
+          <Text className='question-title-text'>{question.title}</Text>
+        </View>
+        <View className='question-main'>
+          {question.answers.map(answer => (
+            <View key={answer.author} className='question-answer'>
+              <View className='question-answer-meta'>
+                <Image
+                  src={answer.avatar}
+                  mode='aspectFill'
+                  className='meta-avatar'
+                />
+                <View className='meta-main'>
+                  <View className='meta-author'>{answer.author}</View>
+                  <View className='meta-bio'>{answer.bio}</View>
+                </View>
+              </View>
+              <View className='question-answer-main'>
+                {answer.content.map(node => (
+                  <View
+                    key={node.content}
+                    className='paragraph'
+                  >
+                    {node.type === 'PARAGRAPH' && (<RichText nodes={node.content} />)}
+                    {node.type === 'IMAGE' && (
+                      <Image
+                        src={node.content}
+                        style={{ width: '100%' }}
+                        mode='widthFix'
+                      />
+                    )}
+                  </View>
+                ))}
+              </View>
+            </View>
+          ))}
+        </View>
+      </View>
+    ))
+
+    return isLoading ? <Loading /> : (
       <View className='detail'>
-        {this.state.image && <View className='detail-banner'>
+        {image && <View className='detail-banner'>
           <Image
-            src={this.state.image}
+            src={image}
             mode='aspectFill'
             className='detail-banner-image'
           />
           <View className='detail-banner-overlay' />
-          <Text className='detail-banner-title'>{this.state.title}</Text>
+          <Text className='detail-banner-title'>{title}</Text>
+          {image_source && <Text className='detail-banner-source'>图片：{image_source}</Text>}
         </View>}
-        <View className='detail-content'>
-          <RichTextParser
-            html={this.state.body}
-            tagStyle={{
-              ul: 'list-style: none; width: 100%; margin: 0 0 30rpx; padding: 0;',
-              li: 'margin: 0 0 30rpx;',
-              p: 'margin: 0 0 30rpx;'
-            }}
-          />
-        </View>
+        {Questions}
         <AtDivider
           content='没有更多了'
           fontColor='#ffd300'
@@ -239,14 +362,14 @@ class Detail extends Component {
         />
         <AtSwitch
           title='收藏此文章'
-          checked={this.state.isFavorite}
+          checked={isFavorite}
           border={false}
           onChange={this.addToFavorite.bind(this)}
         />
-        {this.state.posterData && (
+        {posterData && (
           <Poster
             style={{ position: 'fixed', top: '-99999px', left: '-99999px' }}
-            data={this.state.posterData}
+            data={posterData}
             onPainterFinished={() => { this.setState({ posterData: null }) }}
             save
           />
@@ -278,7 +401,7 @@ class Detail extends Component {
             <Text className='action-item-text'>生成海报</Text>
           </Button>
         </View>
-        {this.state.isFromShare && (
+        {isFromShare && (
           <AtFab onClick={this.goHomePage.bind(this)}>
             <Text className='at-fab__icon at-icon at-icon-home' />
           </AtFab>
