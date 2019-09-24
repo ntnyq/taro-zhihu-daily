@@ -40,6 +40,7 @@ class Detail extends Component {
       title: '',
       image: '',
       image_source: '',
+      images: [],
       questions: [],
       posterData: null,
       isFavorite: false,
@@ -49,7 +50,7 @@ class Detail extends Component {
   }
 
   componentDidMount () {
-    const { id /* = '9715332' */, share } = this.$router.params
+    const { id, share } = this.$router.params
 
     if (id) {
       const isFromShare = !!share
@@ -79,6 +80,15 @@ class Detail extends Component {
 
   goHomePage () {
     Taro.switchTab({ url: '/pages/index/index' })
+  }
+
+  onPreviewImages (current) {
+    const urls = this.state.images
+
+    Taro.previewImage({ current, urls })
+      .catch(() => {
+        Taro.showToast({ title: '预览图片失败，请重试' })
+      })
   }
 
   addToFavorite (isChecked) {
@@ -224,6 +234,7 @@ class Detail extends Component {
     const IMAGE_SOURCE_RE = /src=".*?"/i
 
     const questionHtmlList = html.match(QUESTION_RE) || []
+    const images = []
 
     const questions = questionHtmlList.map(questionHtmlItem => {
       const titleHtml = getStringFromMatched(questionHtmlItem.match(QUESTION_TITLE_RE))
@@ -246,9 +257,11 @@ class Detail extends Component {
 
           if (hasImage) {
             const tempContentHtml = getStringFromMatched(contentHtmlItem.match(IMAGE_SOURCE_RE))
-
-            temp.content = tempContentHtml.substring(5, tempContentHtml.length - 1)
+            const imageSrc = tempContentHtml.substring(5, tempContentHtml.length - 1)
+            temp.content = imageSrc
             temp.type = 'IMAGE'
+
+            images.push(imageSrc)
           } else {
             temp.content = contentHtmlItem
               // .replace(/<p>/g, '')
@@ -272,14 +285,14 @@ class Detail extends Component {
       return { title, answers }
     })
 
-    return questions
+    return { questions, images }
   }
 
   async fetchNewsDetail (id) {
     const { body, title, image, image_source } = await getNewsDetail(id)
-    const questions = this.formatRichText(body)
+    const { questions, images } = this.formatRichText(body)
 
-    this.setState({ title, image, image_source, questions, isLoading: false })
+    this.setState({ title, image, image_source, images, questions, isLoading: false })
     title && Taro.setNavigationBarTitle({ title })
   }
 
@@ -326,6 +339,7 @@ class Detail extends Component {
                     {node.type === 'PARAGRAPH' && (<RichText nodes={node.content} />)}
                     {node.type === 'IMAGE' && (
                       <Image
+                        onClick={this.onPreviewImages.bind(this, node.content)}
                         src={node.content}
                         style={{ width: '100%' }}
                         mode='widthFix'
