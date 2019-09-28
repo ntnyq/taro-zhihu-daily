@@ -1,16 +1,16 @@
 # taro-zhihu-daily
 
-Taro 版本的知乎日报小程序，暂时仅支持微信小程序端。
+Taro 版本的知乎日报小程序，暂仅支持微信小程序端。
 
 ## 踩坑记录
 
 ### 生命周期
 
-- __componentDidMount__ 网络请求的位置，在此会通过 `setState` 重新渲染 View。
+- __componentDidMount__ 推荐在此生命周期进行数据请求，请求后通过 `setState` 重新渲染 View。
 
 ### 页面
 
-页面设置 `height: 100%; overflow-y: auto;` 后会出现滑动不流程，解决方案： `-webkit-overflow-scrolling: touch;`。
+页面设置 `height: 100%; overflow-y: auto;` 后会出现滑动不流畅，解决方案： `-webkit-overflow-scrolling: touch;`。
 
 ### taro-ui 组件库
 
