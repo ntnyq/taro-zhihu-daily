@@ -5,21 +5,20 @@ import {
   Image,
   Text,
   Button,
-  RichText
+  RichText,
 } from '@tarojs/components'
 import {
-  AtFab,
   AtDivider,
   AtSwitch,
-  AtIcon
+  AtIcon,
 } from 'taro-ui'
-import { getNewsDetail } from '@services'
+import { getNewsDetail } from '@/services'
 import {
   Loading,
-  Poster
-} from '@components/common'
-import { addFavoriteNews, removeFavoriteNews } from '@actions/news'
-import { formatTime } from '@utils'
+  Poster,
+} from '@/components/common'
+import { addFavoriteNews, removeFavoriteNews } from '@/actions/news'
+import { formatTime } from '@/utils'
 
 import './style.scss'
 
@@ -32,40 +31,36 @@ function getStringFromMatched (matches) {
 }
 
 class Detail extends Component {
-  constructor(props) {
+  constructor (props) {
     super(props)
 
     this.state = {
-      id: undefined,
+      id: null,
       title: '',
       image: '',
-      image_source: '',
+      imageSource: '',
       images: [],
       questions: [],
       posterData: null,
       isFavorite: false,
       isLoading: true,
-      isFromShare: false
     }
   }
 
   componentDidMount () {
-    const { id, share } = this.$router.params
+    const { id } = this.$router.params
 
     if (id) {
-      const isFromShare = !!share
       const { favoriteList = [] } = this.props
-      const isFavorite = favoriteList.findIndex(item => item.id == id) >= 0
+      const isFavorite = favoriteList.map(item => item.id).includes(id)
 
       this.fetchNewsDetail(id)
-      this.setState({ id, isFromShare, isFavorite })
-    } else {
-      this.goHomePage()
+      this.setState({ id, isFavorite })
     }
   }
 
   componentWillReceiveProps ({ favoriteList }) {
-    const isFavorite = favoriteList.includes(item => item.id === this.state.id)
+    const isFavorite = favoriteList.includes(({ id }) => id === this.state.id)
 
     this.setState({ isFavorite })
   }
@@ -73,13 +68,9 @@ class Detail extends Component {
   onShareAppMessage () {
     const { title, image } = this.state
     const { id } = this.$router.params
-    const path = `/pages/detail/index?id=${id}&share=true`
+    const path = `/pages/detail/index?id=${id}`
 
     return { title, path, imageUrl: image || '' }
-  }
-
-  goHomePage () {
-    Taro.switchTab({ url: '/pages/index/index' })
   }
 
   onPreviewImages (current) {
@@ -118,8 +109,8 @@ class Detail extends Component {
             top: '0rpx',
             left: '0rpx',
             width: '750rpx',
-            height: '450rpx'
-          }
+            height: '450rpx',
+          },
         },
         {
           type: 'text',
@@ -131,8 +122,8 @@ class Detail extends Component {
             fontSize: '36rpx',
             lineHeight: '50rpx',
             maxLines: '2',
-            color: '#333333'
-          }
+            color: '#333333',
+          },
         },
         {
           type: 'text',
@@ -140,8 +131,8 @@ class Detail extends Component {
           css: {
             top: '600rpx',
             left: '40rpx',
-            color: '#999999'
-          }
+            color: '#999999',
+          },
         },
         {
           type: 'text',
@@ -152,8 +143,8 @@ class Detail extends Component {
             width: '300rpx',
             maxLines: '1',
             fontSize: '24rpx',
-            color: '#333333'
-          }
+            color: '#333333',
+          },
         },
         {
           type: 'text',
@@ -164,7 +155,7 @@ class Detail extends Component {
             width: '300rpx',
             maxLines: '1',
             fontSize: '24rpx',
-            color: '#333333'
+            color: '#333333',
           },
         },
         {
@@ -177,8 +168,8 @@ class Detail extends Component {
             height: '200rpx',
             fontSize: '32rpx',
             lineHeight: '48rpx',
-            color: '#666666'
-          }
+            color: '#666666',
+          },
         },
         {
           type: 'rect',
@@ -187,8 +178,8 @@ class Detail extends Component {
             left: '0rpx',
             width: '750rpx',
             height: '120rpx',
-            color: '#eccdb0'
-          }
+            color: '#eccdb0',
+          },
         },
         {
           type: 'text',
@@ -198,8 +189,8 @@ class Detail extends Component {
             left: '40rpx',
             fontSize: '24rpx',
             maxLines: '1',
-            color: '#914d4d'
-          }
+            color: '#914d4d',
+          },
         },
         {
           type: 'text',
@@ -209,10 +200,10 @@ class Detail extends Component {
             left: '40rpx',
             fontSize: '24rpx',
             maxLines: '1',
-            color: '#914d4d'
-          }
-        }
-      ]
+            color: '#914d4d',
+          },
+        },
+      ],
     }
 
     Taro.showLoading({ title: '努力生成中...' })
@@ -222,12 +213,12 @@ class Detail extends Component {
   formatRichText (html) {
     // See https://github.com/llyer/wechat-app-zhihudaily/blob/master/pages/detail/detail.js
     // ([\s\S]*?) 可以匹配换行等字符，(.*?) 是不可以的
-    const QUESTION_RE = /<div class=\"question\">([\s\S]*?)<\/a>(\n*)<\/div>(\n*)<\/div>/g
+    const QUESTION_RE = /<div class="question">([\s\S]*?)<\/a>(\n*)<\/div>(\n*)<\/div>/g
     const QUESTION_TITLE_RE = /<h2.*?<\/h2>/g
-    const ANSWER_RE = /<div class=\"answer\">([\s\S]*?)<\/div>(\n*)<\/div>/g
-    const AVATAR_RE = /<img class=\"avatar\"(.*?).jpg\">/g
-    const AUTHOR_RE = /<span class=\"author\">(.*?)<\/span>/g
-    const BIO_RE = /<span class=\"bio\">(.*?)<\/span>/g
+    const ANSWER_RE = /<div class="answer">([\s\S]*?)<\/div>(\n*)<\/div>/g
+    const AVATAR_RE = /<img class="avatar"(.*?).jpg">/g
+    const AUTHOR_RE = /<span class="author">(.*?)<\/span>/g
+    const BIO_RE = /<span class="bio">(.*?)<\/span>/g
     // TODO 正文，段落列表，需要添加兼容性，p标签是段落正文，figure 标签有可能内嵌图片信息
     const CONTENT_RE = /(<p>|<figure).*?(<\/p>|<\/figure>)/g
     const IMAGE_RE = /<img.*?>/i
@@ -289,10 +280,11 @@ class Detail extends Component {
   }
 
   async fetchNewsDetail (id) {
+    // eslint-disable-next-line camelcase
     const { body, title, image, image_source } = await getNewsDetail(id)
     const { questions, images } = this.formatRichText(body)
 
-    this.setState({ title, image, image_source, images, questions, isLoading: false })
+    this.setState({ title, image, imageSource: image_source, images, questions, isLoading: false })
     title && Taro.setNavigationBarTitle({ title })
   }
 
@@ -300,11 +292,10 @@ class Detail extends Component {
     const {
       title,
       image,
-      image_source,
+      imageSource,
       questions,
       isLoading,
       isFavorite,
-      isFromShare,
       posterData,
     } = this.state
 
@@ -364,7 +355,7 @@ class Detail extends Component {
           />
           <View className='detail-banner-overlay' />
           <Text className='detail-banner-title'>{title}</Text>
-          {image_source && <Text className='detail-banner-source'>图片：{image_source}</Text>}
+          {imageSource && <Text className='detail-banner-source'>图片：{imageSource}</Text>}
         </View>}
         {Questions}
         <AtDivider
@@ -415,11 +406,6 @@ class Detail extends Component {
             <Text className='action-item-text'>生成海报</Text>
           </Button>
         </View>
-        {isFromShare && (
-          <AtFab onClick={this.goHomePage.bind(this)}>
-            <Text className='at-fab__icon at-icon at-icon-home' />
-          </AtFab>
-        )}
       </View>
     )
   }
@@ -427,7 +413,7 @@ class Detail extends Component {
 
 const mapStateToProps = ({ user, news }) => ({
   userInfo: user.userInfo,
-  favoriteList: news.favoriteList
+  favoriteList: news.favoriteList,
 })
 
 const mapActionToProps = dispatch => ({
@@ -436,7 +422,7 @@ const mapActionToProps = dispatch => ({
   },
   dispatchRemoveFavoriteNews (id) {
     dispatch(removeFavoriteNews({ id }))
-  }
+  },
 })
 
 export default connect(mapStateToProps, mapActionToProps)(Detail)

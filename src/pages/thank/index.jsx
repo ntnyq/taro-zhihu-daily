@@ -6,7 +6,7 @@ import './style.scss'
 
 class Thank extends Component {
   config = {
-    navigationBarTitleText: '致谢'
+    navigationBarTitleText: '致谢',
   }
 
   copyText (data) {
@@ -14,7 +14,7 @@ class Thank extends Component {
       data,
       success () {
         Taro.showToast({ title: '复制 URL 成功', icon: 'success' })
-      }
+      },
     })
   }
 

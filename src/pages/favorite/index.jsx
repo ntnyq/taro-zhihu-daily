@@ -1,10 +1,10 @@
 import Taro, { Component } from '@tarojs/taro'
 import { connect } from '@tarojs/redux'
-import { removeFavoriteNews, clearFavoriteNews } from '@actions/news'
+import { removeFavoriteNews, clearFavoriteNews } from '@/actions/news'
 import {
   View,
   Image,
-  Text
+  Text,
 } from '@tarojs/components'
 import { AtButton } from 'taro-ui'
 
@@ -12,10 +12,10 @@ import './style.scss'
 
 class Favorite extends Component {
   config = {
-    navigationBarTitleText: '我的收藏'
+    navigationBarTitleText: '我的收藏',
   }
 
-  constructor(props) {
+  constructor (props) {
     super(props)
 
     this.state = {
@@ -33,7 +33,7 @@ class Favorite extends Component {
       content: '确定清除所有收藏吗，清除后无法恢复？',
       success (res) {
         res.confirm && _this.props.dispatchClearFavoriteNews()
-      }
+      },
     })
   }
 
@@ -84,7 +84,7 @@ class Favorite extends Component {
               type='primary'
             >
               点击回到首页
-          </AtButton>
+            </AtButton>
           </View>)}
       </View>
     )
@@ -92,7 +92,7 @@ class Favorite extends Component {
 }
 
 const mapStateToProps = ({ news }) => ({
-  favoriteList: news.favoriteList
+  favoriteList: news.favoriteList,
 })
 
 const mapActionToProps = dispatch => ({
@@ -101,7 +101,7 @@ const mapActionToProps = dispatch => ({
   },
   dispatchClearFavoriteNews () {
     dispatch(clearFavoriteNews())
-  }
+  },
 })
 
 export default connect(mapStateToProps, mapActionToProps)(Favorite)

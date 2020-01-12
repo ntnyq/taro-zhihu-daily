@@ -1,4 +1,3 @@
-/* eslint-disable import/no-commonjs */
 const path = require('path')
 
 const resolve = (...args) => path.resolve(__dirname, '..', ...args)
@@ -7,128 +6,116 @@ const resolve = (...args) => path.resolve(__dirname, '..', ...args)
 const sassImporter = url => {
   if (url[0] === '~' && url[1] !== '/') {
     return {
-      file: resolve('node_modules', url.substr(1))
+      file: resolve('node_modules', url.substr(1)),
     }
   }
 
   const reg = /^@styles\/(.*)/
   return {
-    file: reg.test(url) ? resolve('src/styles', url.match(reg)[1]) : url
+    file: reg.test(url) ? resolve('src/styles', url.match(reg)[1]) : url,
   }
 }
 
 const config = {
-  projectName: 'taro-zhihu-daily',
-  date: '2019-9-19',
+  projectName: 'zhihu-daily',
+  date: '2020-1-12',
   designWidth: 750,
   deviceRatio: {
-    '640': 2.34 / 2,
-    '750': 1,
-    '828': 1.81 / 2
+    640: 2.34 / 2,
+    750: 1,
+    828: 1.81 / 2,
   },
   sourceRoot: 'src',
   outputRoot: 'dist',
-  plugins: {
-    babel: {
-      sourceMap: true,
-      presets: [
-        ['env', {
-          modules: false
-        }]
+  babel: {
+    sourceMap: true,
+    presets: [
+      ['env', {
+        modules: false,
+      }],
+    ],
+    plugins: [
+      'transform-decorators-legacy',
+      'transform-class-properties',
+      'transform-object-rest-spread',
+      ['transform-runtime', {
+        helpers: false,
+        polyfill: false,
+        regenerator: true,
+        moduleName: 'babel-runtime',
+      },
       ],
-      plugins: [
-        'transform-decorators-legacy',
-        'transform-class-properties',
-        'transform-object-rest-spread'
-      ]
-    },
-    sass: {
-      resource: resolve('src/styles/core/style.scss'),
-      projectDirectory: resolve(),
-      importer: sassImporter
-    }
+    ],
+  },
+  sass: {
+    resource: [
+      resolve('src/styles/core/vars.scss'),
+      resolve('src/styles/core/mixins.scss'),
+    ],
+    projectDirectory: resolve(),
+    importer: sassImporter,
   },
   defineConstants: {
   },
   alias: {
-    '@actions': resolve('src/store/actions'),
-    '@constants': resolve('src/store/constants'),
-    '@reducers': resolve('src/store/reducers'),
-    '@store': resolve('src/store'),
-    '@services': resolve('src/services'),
-    '@assets': resolve('src/assets'),
-    '@images': resolve('src/assets/images'),
-    '@config': resolve('src/config'),
-    '@components': resolve('src/components'),
-    '@styles': resolve('src/styles'),
-    '@utils': resolve('src/utils')
+    '@': resolve('src'),
   },
-  copy: {
-    patterns: [
-    ],
-    options: {
-    }
-  },
-  weapp: {
-    module: {
-      postcss: {
-        autoprefixer: {
-          enable: true,
-          config: {
-            browsers: [
-              'last 3 versions',
-              'Android >= 4.1',
-              'ios >= 8'
-            ]
-          }
+  mini: {
+    postcss: {
+      autoprefixer: {
+        enable: true,
+        config: {
+          browsers: [
+            'last 3 versions',
+            'Android >= 4.1',
+            'ios >= 8',
+          ],
         },
-        pxtransform: {
-          enable: true,
-          config: {
+      },
+      pxtransform: {
+        enable: true,
+        config: {
 
-          }
         },
-        url: {
-          enable: true,
-          config: {
-            limit: 10240 // 设定转换尺寸上限
-          }
+      },
+      url: {
+        enable: true,
+        config: {
+          limit: 10240, // 设定转换尺寸上限
         },
-        cssModules: {
-          enable: false, // 默认为 false，如需使用 css modules 功能，则设为 true
-          config: {
-            namingPattern: 'module', // 转换模式，取值为 global/module
-            generateScopedName: '[name]__[local]___[hash:base64:5]'
-          }
-        }
-      }
-    }
+      },
+      cssModules: {
+        enable: false, // 默认为 false，如需使用 css modules 功能，则设为 true
+        config: {
+          namingPattern: 'module', // 转换模式，取值为 global/module
+          generateScopedName: '[name]__[local]___[hash:base64:5]',
+        },
+      },
+    },
   },
   h5: {
     publicPath: '/',
     staticDirectory: 'static',
-    module: {
-      postcss: {
-        autoprefixer: {
-          enable: true,
-          config: {
-            browsers: [
-              'last 3 versions',
-              'Android >= 4.1',
-              'ios >= 8'
-            ]
-          }
+    postcss: {
+      autoprefixer: {
+        enable: true,
+        config: {
+          browsers: [
+            'last 3 versions',
+            'Android >= 4.1',
+            'ios >= 8',
+          ],
         },
-        cssModules: {
-          enable: false, // 默认为 false，如需使用 css modules 功能，则设为 true
-          config: {
-            namingPattern: 'module', // 转换模式，取值为 global/module
-            generateScopedName: '[name]__[local]___[hash:base64:5]'
-          }
-        }
-      }
-    }
-  }
+      },
+      cssModules: {
+        enable: false, // 默认为 false，如需使用 css modules 功能，则设为 true
+        config: {
+          namingPattern: 'module', // 转换模式，取值为 global/module
+          generateScopedName: '[name]__[local]___[hash:base64:5]',
+        },
+      },
+    },
+  },
 }
 
 module.exports = function (merge) {

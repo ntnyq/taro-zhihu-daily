@@ -1,11 +1,10 @@
-// eslint-disable-next-line import/no-commonjs
 module.exports = {
   env: {
-    NODE_ENV: '"development"'
+    NODE_ENV: '"development"',
   },
   defineConstants: {
-    API_HOST: `"https://news-at.zhihu.com/api/4"`
+    API_HOST: `"https://news-at.zhihu.com/api/4"`,
   },
-  weapp: {},
-  h5: {}
+  mini: {},
+  h5: {},
 }

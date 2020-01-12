@@ -1,4 +1,4 @@
-const globalData = {}
+let globalData = {}
 
 /**
  * 设置全局数据

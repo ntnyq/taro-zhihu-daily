@@ -9,15 +9,15 @@ const api = {
     const {
       url,
       data,
-      contentType
+      contentType,
     } = params
     const options = {
       url: /^https?/.test(url) ? url : apiHost + url,
       data,
       method,
       header: {
-        'contentType': contentType
-      }
+        contentType: contentType,
+      },
     }
 
     return Taro
@@ -30,7 +30,7 @@ const api = {
         } else {
           Taro.showToast({
             title: errMsg || `返回成功，但状态码为${statusCode}`,
-            icon: 'none'
+            icon: 'none',
           })
         }
       })
@@ -39,7 +39,7 @@ const api = {
 
         Taro.showToast({
           title: err.errorMsg || message,
-          icon: 'none'
+          icon: 'none',
         })
 
         return Promise.reject(err)
@@ -68,7 +68,7 @@ const api = {
     const options = { url, data }
 
     return this.baseOptions(options, 'DELETE')
-  }
+  },
 }
 
 export default api

@@ -4,14 +4,14 @@ import {
   Image,
   Text,
   Swiper,
-  SwiperItem
+  SwiperItem,
 } from '@tarojs/components'
 import { AtFab } from 'taro-ui'
-import { formatTime } from '@utils'
+import { formatTime } from '@/utils'
 import {
   getLatestNewsList,
   getNewsListByDate,
-} from '@services'
+} from '@/services'
 
 import './style.scss'
 
@@ -20,10 +20,10 @@ const INIT_DATE_OFFSET = 0
 class Index extends Component {
   config = {
     navigationBarTitleText: '日推',
-    enablePullDownRefresh: true
+    enablePullDownRefresh: true,
   }
 
-  constructor(props) {
+  constructor (props) {
     super(props)
 
     this.state = {
@@ -31,7 +31,7 @@ class Index extends Component {
       dateOffset: INIT_DATE_OFFSET,
       slides: [],
       list: [],
-      showGoTop: false
+      showGoTop: false,
     }
   }
 
@@ -98,7 +98,7 @@ class Index extends Component {
     this.setState({
       latestDate: res.date,
       slides: res.top_stories || [],
-      list: [res]
+      list: [res],
     })
 
     // TODO 通过页面内容高度决定是否继续加载

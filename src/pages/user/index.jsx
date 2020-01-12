@@ -6,23 +6,23 @@ import {
   AtAvatar,
   AtList,
   AtListItem,
-  AtIcon
+  AtIcon,
 } from 'taro-ui'
-import { setUserInfo, clearUserInfo } from '@actions/user'
-import { isEmptyObject } from '@utils'
+import { setUserInfo, clearUserInfo } from '@/actions/user'
+import { isEmptyObject } from '@/utils'
 
 import './style.scss'
 
 class User extends Component {
   config = {
-    navigationBarTitleText: '个人'
+    navigationBarTitleText: '个人',
   }
 
-  constructor(props) {
+  constructor (props) {
     super(props)
 
     this.state = {
-      hasAuth: false
+      hasAuth: false,
     }
   }
 
@@ -79,7 +79,7 @@ class User extends Component {
                 size='small'
               >
                 点击授权
-            </AtButton>
+              </AtButton>
             </View>)}
         </View>
         <View className='user-section'>
@@ -149,7 +149,7 @@ class User extends Component {
 }
 
 const mapStateToProps = ({ user }) => ({
-  userInfo: user.userInfo
+  userInfo: user.userInfo,
 })
 
 const mapActionToProps = dispatch => ({
@@ -158,7 +158,7 @@ const mapActionToProps = dispatch => ({
   },
   dispatchClearUserInfo () {
     dispatch(clearUserInfo())
-  }
+  },
 })
 
 export default connect(mapStateToProps, mapActionToProps)(User)
