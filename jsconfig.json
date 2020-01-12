@@ -2,43 +2,14 @@
   "compilerOptions": {
     "baseUrl": ".",
     "paths": {
-      "@actions/*": [
-        "src/store/actions/*"
-      ],
-      "@constants/*": [
-        "src/store/constants/*"
-      ],
-      "@reducers/*": [
-        "src/store/reducers/*"
-      ],
-      "@store/*": [
-        "src/store/*"
-      ],
-      "@assets/*": [
-        "src/assets/*"
-      ],
-      "@images/*": [
-        "src/assets/images/*"
-      ],
-      "@config/*": [
-        "src/config/*"
-      ],
-      "@components/*": [
-        "src/components/*"
-      ],
-      "@styles/*": [
-        "src/styles/*"
-      ],
-      "@utils/*": [
-        "src/utils/*"
-      ],
-      "@services/*": [
-        "src/services/*"
+      "@/*": [
+        "src/*"
       ]
     }
   },
   "include": [
-    "src/**/*"
+    "src/**/*.js",
+    "src/**/*.jsx"
   ],
   "exclude": [
     "node_modules"

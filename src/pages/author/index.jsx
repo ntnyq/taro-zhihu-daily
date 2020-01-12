@@ -6,10 +6,10 @@ import './style.scss'
 
 class Author extends Component {
   config = {
-    navigationBarTitleText: '关于作者'
+    navigationBarTitleText: '关于作者',
   }
 
-  constructor(props) {
+  constructor (props) {
     super(props)
 
     this.state = {
@@ -17,9 +17,9 @@ class Author extends Component {
         {
           name: 'ntnyq',
           avatar: 'https://avatars1.githubusercontent.com/u/22659150',
-          description: '前端工程师，喜欢技术，喜欢折腾，喜欢小说，喜欢打游戏。'
-        }
-      ]
+          description: '前端工程师，喜欢技术，喜欢折腾，喜欢小说，喜欢打游戏。',
+        },
+      ],
     }
   }
 

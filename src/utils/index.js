@@ -6,7 +6,7 @@
  * @returns {string} 格式化后的时间字符串
  */
 export function formatTime (value, fmt = 'yyyy-MM-dd hh:mm:ss') {
-  const time = new Date(value);
+  const time = new Date(value)
   const obj = {
     'M+': time.getMonth() + 1,
     'd+': time.getDate(),
@@ -15,13 +15,13 @@ export function formatTime (value, fmt = 'yyyy-MM-dd hh:mm:ss') {
     's+': time.getSeconds(),
     'q+': ~~((time.getMonth() + 3) / 3),
     S: time.getMilliseconds(),
-  };
+  }
 
   if (/(y+)/.test(fmt)) {
     fmt = fmt.replace(
       RegExp.$1,
       (time.getFullYear() + '').substr(4 - RegExp.$1.length)
-    );
+    )
   }
 
   for (const k in obj) {
@@ -31,7 +31,7 @@ export function formatTime (value, fmt = 'yyyy-MM-dd hh:mm:ss') {
         RegExp.$1.length === 1
           ? obj[k]
           : ('00' + obj[k]).substr(('' + obj[k]).length)
-      );
+      )
     }
   }
 
@@ -44,7 +44,7 @@ export function formatTime (value, fmt = 'yyyy-MM-dd hh:mm:ss') {
  * @returns {boolean} 检查结果
  */
 export function isEmptyObject (obj = {}) {
-  for (const key in obj) {
+  for (const _ in obj) {
     return false
   }
 

@@ -20,7 +20,7 @@
       width: 100%;
       height: 100%;
       background-color: #5b7492;
-      opacity: .4;
+      opacity: 0.4;
     }
 
     &-title {
@@ -33,7 +33,7 @@
       font-weight: bold;
       font-size: 40px;
       color: #fff;
-      text-shadow: 2px 2px 20px rgba(0, 0, 0, .5);
+      text-shadow: 2px 2px 20px rgba(0, 0, 0, 0.5);
 
       &:before {
         content: "";
@@ -68,7 +68,7 @@
         font-weight: bold;
         text-align: center;
         color: #fff;
-        box-shadow: 0 6px 20px 0 rgba(91, 115, 145, .15);
+        box-shadow: 0 6px 20px 0 rgba(91, 115, 145, 0.15);
         transform: translateY(-50%);
       }
 
@@ -80,7 +80,7 @@
         margin-bottom: 20px;
         border-radius: 10px;
         background-color: #fff;
-        box-shadow: 0 6px 20px 0 rgba(91, 115, 145, .15);
+        box-shadow: 0 6px 20px 0 rgba(91, 115, 145, 0.15);
 
         &-image {
           display: block;

@@ -1,5 +1,9 @@
-dist
+# Enable lint dotfiles
+!.*
+node_modules/.*
+
 node_modules
 
-# ignore lint for third-part lib
+
+# Ignore third-part lib
 src/components/third-part

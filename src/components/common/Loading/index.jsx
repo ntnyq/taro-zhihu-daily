@@ -11,11 +11,11 @@ import './style.scss'
 
 class Loading extends Component {
   static propTypes = {
-    backgroundColor: PropTypes.string
+    backgroundColor: PropTypes.string,
   }
 
   static defaultProps = {
-    backgroundColor: '#e6dcdc'
+    backgroundColor: '#e6dcdc',
   }
 
   render () {

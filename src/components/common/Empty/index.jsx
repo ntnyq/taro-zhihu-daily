@@ -15,7 +15,6 @@ class Empty extends Component {
   render () {
     return (
       <View className='empty'>
-
       </View>
     )
   }

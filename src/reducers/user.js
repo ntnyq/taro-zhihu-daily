@@ -1,12 +1,12 @@
 import Taro from '@tarojs/taro'
 import {
   CLEAR_USER_INFO,
-  SET_USER_INFO
-} from '@constants/user'
-import { USER_INFO } from '@config/storage-key'
+  SET_USER_INFO,
+} from '@/constants/user'
+import { USER_INFO } from '@/constants/storage'
 
 const INITIAL_STATE = {
-  userInfo: Taro.getStorageSync(USER_INFO) || {}
+  userInfo: Taro.getStorageSync(USER_INFO) || {},
 }
 
 function user (state = INITIAL_STATE, action) {
@@ -18,7 +18,7 @@ function user (state = INITIAL_STATE, action) {
 
       return {
         ...state,
-        userInfo: payload.userInfo
+        userInfo: payload.userInfo,
       }
 
     case CLEAR_USER_INFO:
@@ -26,7 +26,7 @@ function user (state = INITIAL_STATE, action) {
 
       return {
         ...state,
-        userInfo: {}
+        userInfo: {},
       }
 
     default:

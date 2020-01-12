@@ -7,25 +7,25 @@ import './style.scss'
 class Poster extends Component {
   config = {
     usingComponents: {
-      painter: '../../third-part/Painter/painter'
-    }
+      painter: '../../third-part/Painter/painter',
+    },
   }
 
   static propsTypes = {
     style: PropTypes.object,
     data: PropTypes.object,
     save: PropTypes.bool,
-    onPaintFinished: PropTypes.func
+    onPaintFinished: PropTypes.func,
   }
 
   static defaultProps = {
     style: null,
     data: null,
     save: false,
-    onPaintFinished: () => { }
+    onPaintFinished: () => { },
   }
 
-  constructor(props) {
+  constructor (props) {
     super(props)
 
     this.state = {}
@@ -40,12 +40,12 @@ class Poster extends Component {
           title: '图片已保存到系统相册',
           content: '快去分享给小伙伴们吧~~',
           confirmText: '我知道了',
-          confirmColor: '#2d8cf0'
+          confirmColor: '#2d8cf0',
         })
       },
       fail (err) {
         console.log(err)
-      }
+      },
     })
   }
 
@@ -76,9 +76,9 @@ class Poster extends Component {
               } else {
                 console.log('用户点击了取消')
               }
-            }
+            },
           })
-        }
+        },
       })
     }
   }

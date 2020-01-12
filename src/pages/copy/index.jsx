@@ -1,7 +1,7 @@
 import Taro, { Component } from '@tarojs/taro'
 import {
   View,
-  Text
+  Text,
 } from '@tarojs/components'
 import { AtButton } from 'taro-ui'
 
@@ -9,14 +9,14 @@ import './style.scss'
 
 class Copyright extends Component {
   config = {
-    navigationBarTitleText: '版权声明'
+    navigationBarTitleText: '版权声明',
   }
 
-  constructor(props) {
+  constructor (props) {
     super(props)
 
     this.state = {
-      email: 'ntnyq@foxmail.com'
+      email: 'ntnyq@foxmail.com',
     }
   }
 
@@ -25,7 +25,7 @@ class Copyright extends Component {
       data: this.state.email,
       success () {
         Taro.showToast({ title: '复制成功', icon: 'success' })
-      }
+      },
     })
   }
 

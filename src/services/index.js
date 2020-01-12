@@ -1,4 +1,4 @@
-import http from '@utils/request'
+import http from '@/utils/request'
 
 /**
  * 获取最新消息列表
